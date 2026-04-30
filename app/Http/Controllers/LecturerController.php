@@ -13,9 +13,22 @@ class LecturerController extends Controller
      */
     public function index()
     {
+
+    $lecturer = Lecturer::latest();
+    $keyword = request('keyword');
+    if($keyword) {
+        $lecturer->where('name', 'like', '%'. $keyword. '%');
+    }
+
+    $department_id = request('department_id');
+    if($department_id) {
+        $lecturer->where('department_id', $department_id);
+    }
+
         return view('lecturer.index', [
             'title' => 'Lecturer',
-            'lecturers' => Lecturer::latest()->get(),
+             'departments' => Department::latest()->get(),
+            'lecturers' => $lecturer->paginate(5)->withQueryString(),
             ]);
     }
 
